@@ -4,10 +4,10 @@ window.addEventListener("load", startGame)
 const totalObstacles =[];
  var firstCircle
 function startGame(){
-    multipleObstacles()
     myGame.board();
     firstCircle = new circle(80,myGame.canvas.height/2,15,0,2,"blue")
     //adding obstacles
+    multipleObstacles()
     updateArea()
     
    
@@ -37,13 +37,14 @@ var myGame = {
 
 function multipleObstacles(){
    const  width =10;
-   const  height= 500;
+  
    const  color="red";
-   const  x=400;
-   const  y=0
-   
+//    const  x=400;
+
+
+     
     setInterval(()=>
-    totalObstacles.push(new obstacles(width,height, color,myGame.canvas.width,y)
+    totalObstacles.push(new obstacles(width, color)
     
     )
     ,1000)
@@ -104,14 +105,18 @@ function circle  (x,y,r, angleStart,endValue,color){
        
 }
 // obstacles
-function obstacles(width, height, color,x, y  ){
+function obstacles(width, color,minGap,maxGap,minHeight,maxHeight ){
     this.width = width;
-    this.height = height;
     this.color =color;
-    this.x = x;
-    this.speed =1
-    this.y = y;
+    this.speed =4
+    this.y = 0;
+    this.x = myGame.canvas.width;
+    var  minHeight = myGame.canvas.height/4;
+    var  maxHeight = myGame.canvas.height/1.2;
+    this.height = Math.floor(Math.random()* (maxHeight-minHeight+1 )+ minHeight);
  
+    this.gap = Math.floor(Math.random()*(maxGap-minGap+1)+minGap);
+   
     this.updateObstacles =()=>{
         ctx = myGame.context
         ctx.beginPath()
@@ -128,22 +133,27 @@ function obstacles(width, height, color,x, y  ){
 
 
 function updateArea(){
-    requestAnimationFrame(updateArea)
     myGame.clear()
     
     
-    
+    // if obstacle touches the player
+    var animate= requestAnimationFrame(updateArea)
     
     totalObstacles.forEach(obstacle =>{
         if(firstCircle.collide(obstacle)){
-           return   cancelAnimationFrame(updateArea) 
+           cancelAnimationFrame(animate) 
             
-        }else{
-            obstacle.updateObstacles()   
-            obstacle.x += -obstacle.speed
         }
-        
     })
+    for (let index = 0; index < totalObstacles.length; index++) {
+       totalObstacles[index].x += -totalObstacles[index].speed
+        totalObstacles[index].updateObstacles()   
+        
+    }
+    
+      
+        
+    
     
   
     firstCircle.update()
