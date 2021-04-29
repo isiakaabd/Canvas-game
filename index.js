@@ -2,11 +2,11 @@ window.addEventListener("load", startGame)
 
 //starting game 
 const totalObstacles =[];
-var firstCircle
-multipleObstacles()
+ var firstCircle
 function startGame(){
+    multipleObstacles()
     myGame.board();
-    firstCircle = new circle(20,myGame.canvas.height/2,15,0,2,"blue")
+    firstCircle = new circle(80,myGame.canvas.height/2,15,0,2,"blue")
     //adding obstacles
     updateArea()
     
@@ -22,7 +22,7 @@ var myGame = {
     board  :  function (){
         this.canvas.width = window.innerWidth
         this.canvas.height = window.innerHeight;
-        window.addEventListener("touchmove", ()=>touchScreen)
+  // window.addEventListener("touchmove", ()=>touchScreen)
     },
     clear:  function()  {
         this.context.clearRect(0,0,this.canvas.width, this.canvas.height)
@@ -43,10 +43,11 @@ function multipleObstacles(){
    const  y=0
    
     setInterval(()=>
-    totalObstacles.push(new obstacles(width,height, color,myGame.canvas.width,0)
+    totalObstacles.push(new obstacles(width,height, color,myGame.canvas.width,y)
     
     )
     ,1000)
+
    
 }
 
@@ -84,15 +85,16 @@ function circle  (x,y,r, angleStart,endValue,color){
         }
         this.collide = (otherobj)=>{
             var myleft = this.x;
-            var myright = this.x + (this.width);
+            var myright = this.x + (this.r);
             var mytop = this.y;
-            var mybottom = this.y + (this.height);
+            var mybottom = this.y + (this.r);
             var otherleft = otherobj.x;
             var otherright = otherobj.x + (otherobj.width);
             var othertop = otherobj.y;
             var otherbottom = otherobj.y + (otherobj.height);
             var crash = true;
             if ((mybottom < othertop) || (mytop > otherbottom) || (myright < otherleft) || (myleft > otherright)) {
+             
                 crash = false;
             }
             return crash;
@@ -126,39 +128,40 @@ function obstacles(width, height, color,x, y  ){
 
 
 function updateArea(){
-    
     requestAnimationFrame(updateArea)
     myGame.clear()
-    totalObstacles.forEach(obst=>{
-        console.log(obst)
-        if(firstCircle.collide(obst)){
-            console.log("sdd")
-             cancelAnimationFrame(updateArea)
-            
-            
-        }
-    })
+    
+    
     
     
     totalObstacles.forEach(obstacle =>{
-        obstacle.x += -obstacle.speed
-        obstacle.updateObstacles()   
+        if(firstCircle.collide(obstacle)){
+           return   cancelAnimationFrame(updateArea) 
+            
+        }else{
+            obstacle.updateObstacles()   
+            obstacle.x += -obstacle.speed
+        }
+        
     })
     
-    firstCircle.newPos()
+  
     firstCircle.update()
+    firstCircle.newPos()
+    
             
         
-   // })
-   
       
+    
+
+    
 }
 
 
 
 
 
-    
+
 document.addEventListener("keydown",keyDown)
 document.addEventListener("touchmove",keyDown)
 document.addEventListener("touchmove",keyUp)
@@ -173,10 +176,10 @@ function keyDown (e){
     if(e.key== 4 || e.key === "ArrowLeft"){
         moveLeft()
     }
-    if(e.key=== 8 || e.key === "ArrowDown"){
+    if(e.key== 8 || e.key === "ArrowDown"){
         moveDown()
     }
-    if(e.key=== 6 || e.key === "ArrowRight"){
+    if(e.key== 6 || e.key === "ArrowRight"){
         moveRight()
     }
 }
