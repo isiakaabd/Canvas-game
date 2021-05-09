@@ -7,8 +7,8 @@ function startGame(){
     myGame.board();
     firstCircle = new circle(80,myGame.canvas.height/2,15,0,2,"blue")
     //adding obstacles
-    multipleObstacles()
     updateArea()
+    multipleObstacles()
     
    
 }
@@ -37,17 +37,38 @@ var myGame = {
 
 function multipleObstacles(){
    const  width =10;
-  
-   const  color="red";
-//    const  x=400;
-
-
-     
-    setInterval(()=>
-    totalObstacles.push(new obstacles(width, color)
+    var x = myGame.canvas.width;
+    const  color="red";
     
+    
+
+//width, color,height,x,y
+     
+    setInterval(()=>{
+        var minHeight = 100;
+        var   maxHeight = 300;
+         var  minGap = 50;
+          var maxGap = 150;
+          var gap = Math.floor(Math.random()*(maxGap-minGap+1)+minGap);
+    let  height = Math.floor(Math.random()*(maxHeight-minHeight + 1)+ minHeight);
+    totalObstacles.push(new obstacles(10,"green", x - height - gap , x, height+gap),
+  
     )
-    ,1000)
+    
+    },1000);
+     
+    setInterval(()=>{
+        var minHeight = 80;
+        var   maxHeight = 200;
+         var  minGap = 50;
+          var maxGap = 100;
+          var gap = Math.floor(Math.random()*(maxGap-minGap+1)+minGap);
+        let  height = Math.floor(Math.random()*(maxHeight-minHeight + 1)+ minHeight);
+    totalObstacles.push(new obstacles(width, color,height-gap,x, 0)
+    
+    )}
+    
+    ,3000);
 
    
 }
@@ -105,22 +126,19 @@ function circle  (x,y,r, angleStart,endValue,color){
        
 }
 // obstacles
-function obstacles(width, color,minGap,maxGap,minHeight,maxHeight ){
+function obstacles(width, color,height,x,y){
     this.width = width;
     this.color =color;
-    this.speed =4
-    this.y = 0;
-    this.x = myGame.canvas.width;
-    var  minHeight = myGame.canvas.height/4;
-    var  maxHeight = myGame.canvas.height/1.2;
-    this.height = Math.floor(Math.random()* (maxHeight-minHeight+1 )+ minHeight);
- 
-    this.gap = Math.floor(Math.random()*(maxGap-minGap+1)+minGap);
+    this.speed =2
+    this.x = x;
+    this.y = y;
+    this.height= height
    
-    this.updateObstacles =()=>{
+   
+    this.updateObstacles = ()=>{
         ctx = myGame.context
         ctx.beginPath()
-        ctx.fillStyle = color
+        ctx.fillStyle = this.color
         ctx.fillRect(this.x, this.y, this.width, this.height)
     
     }
@@ -132,32 +150,33 @@ function obstacles(width, color,minGap,maxGap,minHeight,maxHeight ){
 
 
 
-function updateArea(){
+const updateArea=()=>{
     myGame.clear()
     
+    var animate= requestAnimationFrame(updateArea)
     
     // if obstacle touches the player
-    var animate= requestAnimationFrame(updateArea)
     
     totalObstacles.forEach(obstacle =>{
         if(firstCircle.collide(obstacle)){
-           cancelAnimationFrame(animate) 
+            cancelAnimationFrame(animate) 
             
         }
     })
-    for (let index = 0; index < totalObstacles.length; index++) {
-       totalObstacles[index].x += -totalObstacles[index].speed
-        totalObstacles[index].updateObstacles()   
+    totalObstacles.map(obstacless =>{
+       
+        obstacless.x += -obstacless.speed
+           obstacless.updateObstacles()  
+        }
+        )
         
-    }
-    
-      
         
-    
-    
-  
-    firstCircle.update()
-    firstCircle.newPos()
+        
+        
+        
+        
+        firstCircle.update()
+        firstCircle.newPos()
     
             
         

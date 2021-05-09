@@ -1,8 +1,11 @@
-*{
+*,*::after,*::before{
     margin: 0;
     padding: 0;
+    border: 0;
 }
 canvas{
-    max-height: 100%;
-    /* overflow: hidden */
+    height: 100%;
+    overflow: hidden;
+    cursor: pointer;
+    overflow: hidden;
 }
