@@ -2,10 +2,12 @@ window.addEventListener("load", startGame)
 
 //starting game 
 const totalObstacles =[];
- var firstCircle
+ var firstCircle;
+ var myScoress =0
 function startGame(){
     myGame.board();
     firstCircle = new circle(80,myGame.canvas.height/2,15,0,2,"blue")
+    myScores =new circle(180,50,15,0,2,"RED", "text")
     //adding obstacles
     updateArea()
     multipleObstacles()
@@ -27,6 +29,7 @@ var myGame = {
     clear:  function()  {
         this.context.clearRect(0,0,this.canvas.width, this.canvas.height)
     },
+   
 
 
    
@@ -83,7 +86,7 @@ function touchScreen(e){
 }
 
 
-function circle  (x,y,r, angleStart,endValue,color){
+function circle  (x,y,r, angleStart,endValue,color,type){
     this.x = x;
         this.y = y;
         this.r = r;
@@ -92,14 +95,24 @@ function circle  (x,y,r, angleStart,endValue,color){
         this.speed = 2
         this.totalHeight = this.y -this.r
         this.totalWidth = this.x +this.r 
-        var c = Math.PI*endValue  
+        var c = Math.PI*endValue 
+        this.type= type
+        
+       
+    
         this.update = ()=>{
-            
-            ctx = myGame.context
+         ctx = myGame.context
+        if(this.type=="text"){
+            ctx.font = this.width + " " + this.height;
+            ctx.fillStyle = color;
+            ctx.fillText(this.text, this.x, this.y);
+        }else{
+          
             ctx.beginPath()
             ctx.fillStyle = color
             ctx.arc(this.x, this.y, this.r, angleStart, c)
             ctx.fill()
+        }
         }
         this.newPos = () => {
             this.x += this.speedX
@@ -177,7 +190,8 @@ const updateArea=()=>{
         
         firstCircle.update()
         firstCircle.newPos()
-    
+        myScores.update()
+        myScores.text ="SCORES: " + myScoress++
             
         
       
