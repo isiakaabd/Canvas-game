@@ -3,7 +3,7 @@ window.addEventListener("load", startGame)
 //starting game 
 const totalObstacles =[];
  var firstCircle;
- var myScoress =0
+ var myScoress = 0
 function startGame(){
     myGame.board();
     firstCircle = new circle(80,myGame.canvas.height/2,15,0,2,"blue")
@@ -48,11 +48,11 @@ function multipleObstacles(){
 //width, color,height,x,y
      
     setInterval(()=>{
-        var minHeight = 100;
-        var   maxHeight = 300;
-         var  minGap = 50;
-          var maxGap = 150;
-          var gap = Math.floor(Math.random()*(maxGap-minGap+1)+minGap);
+    var minHeight = 100;
+    var   maxHeight = 300;
+    var  minGap = 50;
+    var maxGap = 150;
+    var gap = Math.floor(Math.random()*(maxGap-minGap+1)+minGap);
     let  height = Math.floor(Math.random()*(maxHeight-minHeight + 1)+ minHeight);
     totalObstacles.push(new obstacles(10,"green", x - height - gap , x, height+gap),
   
@@ -103,7 +103,7 @@ function circle  (x,y,r, angleStart,endValue,color,type){
         this.update = ()=>{
          ctx = myGame.context
         if(this.type=="text"){
-            ctx.font = this.width + " " + this.height;
+            ctx.font = " 20px Georgia" ;
             ctx.fillStyle = color;
             ctx.fillText(this.text, this.x, this.y);
         }else{
