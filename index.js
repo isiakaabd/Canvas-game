@@ -2,12 +2,20 @@ window.addEventListener("load", startGame)
 
 //starting game 
 const totalObstacles =[];
- var firstCircle;
- var myScoress = 0
+var firstCircle;
+var myScoress = 0
+var backgroundImg;
+var mySound;
+var myMusic;
 function startGame(){
     myGame.board();
     firstCircle = new circle(80,myGame.canvas.height/2,15,0,2,"blue")
     myScores =new circle(180,50,15,0,2,"RED", "text")
+    backgroundImg =new circle(0,0,900,myGame.canvas.height,0,"background.jpeg", "image")
+    newSound = new sound("sound.mp3")
+    // music
+    myMusic = new sound("music.mp3")
+    
     //adding obstacles
     updateArea()
     multipleObstacles()
@@ -102,11 +110,18 @@ function circle  (x,y,r, angleStart,endValue,color,type){
     
         this.update = ()=>{
          ctx = myGame.context
-        if(this.type=="text"){
+        if (this.type=="text") {
             ctx.font = " 20px Georgia" ;
             ctx.fillStyle = color;
             ctx.fillText(this.text, this.x, this.y);
-        }else{
+        }else if(this.type== "image"){
+            this.image = new Image();
+            this.image.src= color;
+            // ctx.style()
+            ctx.drawImage(this.image,this.x , this.y, this.r+ this.r,myGame.canvas.height)
+   
+        }
+        else{
           
             ctx.beginPath()
             ctx.fillStyle = color
@@ -115,8 +130,13 @@ function circle  (x,y,r, angleStart,endValue,color,type){
         }
         }
         this.newPos = () => {
-            this.x += this.speedX
-            this.y += this.speedY
+            this.x += this.speedX;
+            this.y += this.speedY;
+            if (this.type == "image") {
+                if (this.x == -(this.r)) {
+                  this.x = 0;
+                }
+            }
         }
         this.collide = (otherobj)=>{
             var myleft = this.x;
@@ -142,7 +162,8 @@ function circle  (x,y,r, angleStart,endValue,color,type){
 function obstacles(width, color,height,x,y){
     this.width = width;
     this.color =color;
-    this.speed =2
+    this.speed =2;
+    this.newSpeed =this.speed++
     this.x = x;
     this.y = y;
     this.height= height
@@ -159,39 +180,69 @@ function obstacles(width, color,height,x,y){
 }
 
 
-
+function sound (src){
+  this.sound= document.createElement("audio");
+  this.sound.src = src;
+  this.sound.setAttribute("preload", "auto");
+  this.sound.setAttribute("controls", "none");
+  this.sound.style.display = "none";
+  this.play=()=>{
+      this.sound.play()
+  }
+  this.stop = ()=>{
+      console.log("stop")
+      this.sound.pause()
+  }
+  
+}
 
 
 
 const updateArea=()=>{
     myGame.clear()
+    // background image
+ backgroundImg.speedX = -1
+ var animate= requestAnimationFrame(updateArea)
+    backgroundImg.newPos()
+    backgroundImg.update()
+    myMusic.play()
     
-    var animate= requestAnimationFrame(updateArea)
     
-    // if obstacle touches the player
+    
     
     totalObstacles.forEach(obstacle =>{
         if(firstCircle.collide(obstacle)){
+            myMusic.stop()
             cancelAnimationFrame(animate) 
+            newSound.play()
             
         }
     })
     totalObstacles.map(obstacless =>{
-       
+    
         obstacless.x += -obstacless.speed
-           obstacless.updateObstacles()  
+        if(myScoress> 3000){
+            obstacless.x += -obstacless.newSpeed
+           }
+        else if(myScoress> 4000){
+            
+            newSpeed++
+        obstacless.x+= -obstacless.newSpeed
         }
+           obstacless.updateObstacles()  
+    }
         )
         
         
         
         
         
-        
+       
         firstCircle.update()
         firstCircle.newPos()
         myScores.update()
         myScores.text ="SCORES: " + myScoress++
+        
             
         
       
