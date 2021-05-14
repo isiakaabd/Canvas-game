@@ -5,13 +5,14 @@ restart.addEventListener("click", reLoad)
 
 //starting game 
 const totalObstacles =[];
+var scoreline= 100
 var firstCircle;
 var myScoress = 0
 var backgroundImg;
-var highScore
+var highScore;
+var mo =[]
 
 var myMusic;
-
 function reLoad(){
   
     document.body.classList.remove("gameover")
@@ -233,11 +234,16 @@ const updateArea=()=>{
     totalObstacles.forEach(obstacle =>{
         if(firstCircle.collide(obstacle)){
             newSound.play();
-          
+            
 
-            if(myScoress > localStorage.p ){
-                  localStorage.setItem("p", myScoress)
-                
+            if(myScoress){
+
+                // console.log(c)
+                localStorage.setItem("z", myScoress)
+                // c= myScoress
+            } if(myScoress > 300 ){
+               localStorage.setItem("w", myScoress)
+        
             }
           
             myMusic.stop()
@@ -272,7 +278,14 @@ const updateArea=()=>{
         firstCircle.newPos()
         myScores.update()
         myHighScore.update()
-        myHighScore.text = "HighScore : "+ localStorage.getItem("p")
+        myHighScore.text===null || myHighScore.text==undefined? 0: localStorage.getItem("w")
+      if (myHighScore.text=== null || myHighScore.text=== undefined){
+        myHighScore.text=myScoress++
+         myHighScore.text = "HighScore : "+ localStorage.getItem("w")
+      }else{
+
+      }
+      
         myScores.text ="SCORES: " + myScoress++
         
         
