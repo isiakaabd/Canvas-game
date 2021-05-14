@@ -1,25 +1,48 @@
-window.addEventListener("load", startGame)
+const display = document.getElementById("gameOver");
+const restart = document.getElementById("restart")
+window.addEventListener("load",startGame);
+restart.addEventListener("click", reLoad)
 
 //starting game 
 const totalObstacles =[];
 var firstCircle;
 var myScoress = 0
 var backgroundImg;
-var mySound;
+var highScore
+
 var myMusic;
+
+function reLoad(){
+  
+    document.body.classList.remove("gameover")
+    myGame.canvas.style.opacity= 1
+    display.classList.remove("show")
+//     
+   
+}
+
+
+
+
+
 function startGame(){
-    myGame.board();
-    firstCircle = new circle(80,myGame.canvas.height/2,15,0,2,"blue")
-    myScores =new circle(180,50,15,0,2,"RED", "text")
-    backgroundImg =new circle(0,0,900,myGame.canvas.height,0,"background.jpeg", "image")
+    
+     myGame.board();
+    firstCircle = new circle(20,(myGame.canvas.height)/2, 15,0,2,"blue")
+    myScores =new circle(10,30,15,0,2,"RED", "text");
+    // high score
+
+    myHighScore =new circle(myGame.canvas.width-250,30,15,0,2,"white", "text");
+    backgroundImg =new circle(0,0,900,myGame.canvas.height,0,"background.jpg", "image")
     newSound = new sound("sound.mp3")
     // music
     myMusic = new sound("music.mp3")
+    myMusic.play()
     
     //adding obstacles
     updateArea()
-    multipleObstacles()
-    
+    multipleObstacles();
+
    
 }
 
@@ -30,8 +53,9 @@ var myGame = {
     context : this.canvas.getContext("2d"),
     
     board  :  function (){
-        this.canvas.width = window.innerWidth
-        this.canvas.height = window.innerHeight;
+        this.canvas.width = 480;
+        this.canvas.style.maxWidth="100%"
+        this.canvas.height = 270
   // window.addEventListener("touchmove", ()=>touchScreen)
     },
     clear:  function()  {
@@ -48,38 +72,33 @@ var myGame = {
 
 function multipleObstacles(){
    const  width =10;
-    var x = myGame.canvas.width;
-    const  color="red";
-    
-    
+   var   x = myGame.canvas.width;
 
 //width, color,height,x,y
-     
-    setInterval(()=>{
-    var minHeight = 100;
-    var   maxHeight = 300;
-    var  minGap = 50;
-    var maxGap = 150;
-    var gap = Math.floor(Math.random()*(maxGap-minGap+1)+minGap);
-    let  height = Math.floor(Math.random()*(maxHeight-minHeight + 1)+ minHeight);
-    totalObstacles.push(new obstacles(10,"green", x - height - gap , x, height+gap),
-  
-    )
     
-    },1000);
      
     setInterval(()=>{
-        var minHeight = 80;
-        var   maxHeight = 200;
-         var  minGap = 50;
-          var maxGap = 100;
-          var gap = Math.floor(Math.random()*(maxGap-minGap+1)+minGap);
-        let  height = Math.floor(Math.random()*(maxHeight-minHeight + 1)+ minHeight);
-    totalObstacles.push(new obstacles(width, color,height-gap,x, 0)
+        var minHeight = 70
+        var maxHeight = 100; //myGame.canvas.height - 2* firstCircle.r;
+        let height = Math.floor(Math.random()*(maxHeight-minHeight + 1)+ minHeight);
+        totalObstacles.push(new obstacles(width, "green",height,x, 0)
     
     )}
     
-    ,3000);
+    ,1000);
+
+    setInterval(()=>{
+       
+        var minHeight = 20;
+        var maxHeight = 80; //myGame.canvas.height - 2* firstCircle.r
+        var minGap = 100;
+        var maxGap = 150;
+        var gap = Math.floor(Math.random()*(maxGap-minGap+1)+minGap);
+        let height = Math.floor(Math.random()*(maxHeight-minHeight + 1) + minHeight);
+        totalObstacles.push(new obstacles(width, "green",x- height-gap,x, height +gap)
+    )}
+    
+    ,500);
 
    
 }
@@ -95,7 +114,7 @@ function touchScreen(e){
 
 
 function circle  (x,y,r, angleStart,endValue,color,type){
-    this.x = x;
+        this.x = x;
         this.y = y;
         this.r = r;
         this.speedX= 0
@@ -111,7 +130,7 @@ function circle  (x,y,r, angleStart,endValue,color,type){
         this.update = ()=>{
          ctx = myGame.context
         if (this.type=="text") {
-            ctx.font = " 20px Georgia" ;
+            ctx.font = " 30px Georgia" ;
             ctx.fillStyle = color;
             ctx.fillText(this.text, this.x, this.y);
         }else if(this.type== "image"){
@@ -186,11 +205,12 @@ function sound (src){
   this.sound.setAttribute("preload", "auto");
   this.sound.setAttribute("controls", "none");
   this.sound.style.display = "none";
-  this.play=()=>{
+  document.body.appendChild(this.sound);
+  this.play= () => {
       this.sound.play()
   }
-  this.stop = ()=>{
-      console.log("stop")
+  this.stop = () => {
+    
       this.sound.pause()
   }
   
@@ -205,16 +225,26 @@ const updateArea=()=>{
  var animate= requestAnimationFrame(updateArea)
     backgroundImg.newPos()
     backgroundImg.update()
-    myMusic.play()
+   
     
     
     
     
     totalObstacles.forEach(obstacle =>{
         if(firstCircle.collide(obstacle)){
+            newSound.play();
+          
+
+            if(myScoress > localStorage.p ){
+                  localStorage.setItem("p", myScoress)
+                
+            }
+          
             myMusic.stop()
+            document.body.classList.add("gameover")
+            myGame.canvas.style.opacity= .3
+            display.classList.add("show")
             cancelAnimationFrame(animate) 
-            newSound.play()
             
         }
     })
@@ -241,9 +271,10 @@ const updateArea=()=>{
         firstCircle.update()
         firstCircle.newPos()
         myScores.update()
+        myHighScore.update()
+        myHighScore.text = "HighScore : "+ localStorage.getItem("p")
         myScores.text ="SCORES: " + myScoress++
         
-            
         
       
     
@@ -293,22 +324,22 @@ function keyUp(e){
 // directions
 
 function moveUp(){
-    myGame.clear()
+   
     firstCircle.speedY = -firstCircle.speed
     
 }
 function moveDown(){
-    myGame.clear()
+    
     firstCircle.speedY = firstCircle.speed
     
 }
 function moveLeft(){
-    myGame.clear()
+    
     firstCircle.speedX= -firstCircle.speed
     
 }
 function moveRight(){
-    myGame.clear()
+   
     firstCircle.speedX= firstCircle.speed
     
 }

@@ -3,9 +3,51 @@
     padding: 0;
     border: 0;
 }
+body{
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
 canvas{
-    height: 100%;
     overflow: hidden;
     cursor: pointer;
-    overflow: hidden;
+    z-index: 200;
+    position: fixed;
+    max-width: fit-content;
+  
+}
+.restart{
+    align-self: center;
+    padding: 10px 18px;
+    border-radius: 5px;
+    font-size: 16px;
+    text-transform: uppercase;
+}
+
+.gameoverDisplay{
+    display: none;
+    top:0;
+    left: 50%;
+    z-index: 500;
+    padding: 30px;
+    color: white;
+  
+}
+.gameoverDisplay h3{
+line-height: 4;
+
+}
+
+.gameover{
+    background-color: rgba(0,0,0,.8);
+  z-index: 100;
+ 
+   
+}
+
+.gameoverDisplay.show{
+    display: block;
 }
